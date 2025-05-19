@@ -9,12 +9,10 @@ namespace PracticalWork5
 {
     internal class Person : INameAndCopy
     {
-        // Закрытые поля
         private string firstName;
         private string lastName;
         private DateTime birthDate;
 
-        // Конструктор с параметрами
         public Person(string firstName, string lastName, DateTime birthDate)
         {
             this.firstName = firstName;
@@ -22,15 +20,13 @@ namespace PracticalWork5
             this.birthDate = birthDate;
         }
 
-        // Конструктор без параметров
         public Person()
         {
-            firstName = "John";
-            lastName = "Doe";
+            firstName = "Неизвестно";
+            lastName = "Неизвестно";
             birthDate = new DateTime(2000, 1, 1);
         }
 
-        // Свойства для доступа к полям
         public string FirstName
         {
             get { return firstName; }
@@ -49,14 +45,12 @@ namespace PracticalWork5
             set { birthDate = value; }
         }
 
-        // Свойство для получения и изменения года рождения
         public int BirthYear
         {
             get { return birthDate.Year; }
             set { birthDate = new DateTime(value, birthDate.Month, birthDate.Day); }
         }
 
-        // Реализация свойства Name из интерфейса INameAndCopy
         public string Name
         {
             get { return firstName + " " + lastName; }
@@ -71,7 +65,6 @@ namespace PracticalWork5
             }
         }
 
-        // Переопределение метода Equals
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
@@ -83,12 +76,13 @@ namespace PracticalWork5
                    birthDate == other.birthDate;
         }
 
-        // Переопределение операторов == и !=
         public static bool operator ==(Person left, Person right)
         {
-            if (ReferenceEquals(left, null))
-                return ReferenceEquals(right, null);
-            return left.Equals(right);
+            if (ReferenceEquals(left, right)) return true;
+            if ((object)left == null || (object)right == null) return false;
+            return left.firstName == right.firstName && 
+                left.lastName == right.lastName && 
+                left.birthDate == right.birthDate;
         }
 
         public static bool operator !=(Person left, Person right)
@@ -96,29 +90,21 @@ namespace PracticalWork5
             return !(left == right);
         }
 
-        // Переопределение метода GetHashCode
         public override int GetHashCode()
         {
-            int hash = 17;
-            hash = hash * 23 + (firstName?.GetHashCode() ?? 0);
-            hash = hash * 23 + (lastName?.GetHashCode() ?? 0);
-            hash = hash * 23 + birthDate.GetHashCode();
-            return hash;
+            return firstName.GetHashCode() + lastName.GetHashCode() + birthDate.GetHashCode();
         }
 
-        // Метод DeepCopy для интерфейса INameAndCopy
         public virtual object DeepCopy()
         {
             return new Person(firstName, lastName, birthDate);
         }
 
-        // Переопределение метода ToString()
         public override string ToString()
         {
-            return $"Person: {firstName} {lastName}, Birth Date: {birthDate.ToShortDateString()}";
+            return $"ФИО: {firstName} {lastName}, Дата рожд-я: {birthDate.ToShortDateString()}";
         }
 
-        // Виртуальный метод ToShortString()
         public virtual string ToShortString()
         {
             return $"{firstName} {lastName}";

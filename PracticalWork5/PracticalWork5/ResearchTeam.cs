@@ -15,13 +15,11 @@ namespace PracticalWork5
     }
     internal class ResearchTeam : Team, INameAndCopy, IEnumerable
     {
-        // Закрытые поля
         private string topic;
         private TimeFrame timeFrame;
         private ArrayList members;
         private ArrayList publications;
 
-        // Конструктор с параметрами
         public ResearchTeam(string topic, string organization, int registrationNumber, TimeFrame timeFrame)
             : base(organization, registrationNumber)
         {
@@ -31,51 +29,49 @@ namespace PracticalWork5
             this.publications = new ArrayList();
         }
 
-        // Конструктор без параметров
         public ResearchTeam() : base()
         {
-            topic = "Default Research Topic";
+            topic = "Тема исследований по умолчанию";
             timeFrame = TimeFrame.Year;
             members = new ArrayList();
             publications = new ArrayList();
         }
 
-        // Свойство для доступа к полю с названием темы исследований
         public string Topic
         {
             get { return topic; }
             set { topic = value; }
         }
 
-        // Свойство для доступа к полю с продолжительностью исследований
         public TimeFrame TimeFrame
         {
             get { return timeFrame; }
             set { timeFrame = value; }
         }
 
-        // Свойство для доступа к списку публикаций
         public ArrayList Publications
         {
             get { return publications; }
             set { publications = value; }
         }
 
-        // Свойство для доступа к списку участников проекта
         public ArrayList Members
         {
             get { return members; }
             set { members = value; }
         }
 
-        // Реализация свойства Name из интерфейса INameAndCopy
-        public new string Name
+        string INameAndCopy.Name
         {
             get { return topic; }
             set { topic = value; }
         }
 
-        // Свойство типа Team
+        object INameAndCopy.DeepCopy()
+        {
+            return DeepCopy();
+        }
+
         public Team Team
         {
             get { return new Team(organization, registrationNumber); }
@@ -86,7 +82,6 @@ namespace PracticalWork5
             }
         }
 
-        // Свойство возвращающее публикацию с самой поздней датой
         public Paper LatestPublication
         {
             get
@@ -109,13 +104,11 @@ namespace PracticalWork5
             }
         }
 
-        // Индексатор
         public bool this[TimeFrame frame]
         {
             get { return timeFrame == frame; }
         }
 
-        // Метод добавления публикаций
         public void AddPapers(params Paper[] papers)
         {
             if (papers == null)
@@ -128,7 +121,6 @@ namespace PracticalWork5
             }
         }
 
-        // Метод добавления участников проекта
         public void AddMembers(params Person[] people)
         {
             if (people == null)
@@ -141,13 +133,11 @@ namespace PracticalWork5
             }
         }
 
-        // Переопределение метода ToString()
         public override string ToString()
         {
-            string result = $"Research Team:\n Topic: {topic}\n Organization: {organization}\n Registration Number: {registrationNumber}\n Time Frame: {timeFrame}\n";
+            string result = $"Research Team:\n Тема исследований: {topic}\n Организация: {organization}\n Номер регистрации: {registrationNumber}\n Продолжительность: {timeFrame}\n";
 
-            // Добавление списка участников
-            result += "Members:";
+            result += "Участники:";
             if (members != null && members.Count > 0)
             {
                 foreach (Person member in members)
@@ -157,11 +147,10 @@ namespace PracticalWork5
             }
             else
             {
-                result += "\n  No members";
+                result += "\n  Нет участников";
             }
 
-            // Добавление списка публикаций
-            result += "\nPublications:";
+            result += "\nПубликации:";
             if (publications != null && publications.Count > 0)
             {
                 foreach (Paper publication in publications)
@@ -171,31 +160,27 @@ namespace PracticalWork5
             }
             else
             {
-                result += "\n  No publications";
+                result += "\n  Нет публикаций";
             }
 
             return result;
         }
 
-        // Метод ToShortString()
         public string ToShortString()
         {
-            return $"Research Team:\n Topic: {topic}\n Organization: {organization}\n Registration Number: {registrationNumber}\n Time Frame: {timeFrame}\n Members Count: {members.Count}\n Publications Count: {publications.Count}";
+            return $"Research Team:\n Тема: {topic}\n Организация: {organization}\n Номер регистрации: {registrationNumber}\n Продолжительность: {timeFrame}\n Кол-во участников: {members.Count}\n Кол-во публикаций: {publications.Count}";
         }
 
-        // Переопределение метода DeepCopy
         public override object DeepCopy()
         {
             ResearchTeam copy = new ResearchTeam(topic, organization, registrationNumber, timeFrame);
 
-            // Копирование участников
             foreach (Person member in members)
             {
                 if (member != null)
                     copy.Members.Add(member.DeepCopy());
             }
 
-            // Копирование публикаций
             foreach (Paper publication in publications)
             {
                 if (publication != null)
@@ -205,7 +190,6 @@ namespace PracticalWork5
             return copy;
         }
 
-        // Итератор для перебора участников проекта, не имеющих публикаций
         public IEnumerable MembersWithoutPublications()
         {
             foreach (Person member in members)
@@ -225,7 +209,6 @@ namespace PracticalWork5
             }
         }
 
-        // Итератор с параметром для перебора публикаций за последние n лет
         public IEnumerable RecentPublications(int years)
         {
             DateTime cutoffDate = DateTime.Now.AddYears(-years);
@@ -236,13 +219,11 @@ namespace PracticalWork5
             }
         }
 
-        // Реализация интерфейса IEnumerable для перебора участников с публикациями
         public IEnumerator GetEnumerator()
         {
             return new ResearchTeamEnumerator(this);
         }
 
-        // Вспомогательный класс ResearchTeamEnumerator для реализации IEnumerator
         private class ResearchTeamEnumerator : IEnumerator
         {
             private ResearchTeam team;
@@ -254,7 +235,6 @@ namespace PracticalWork5
                 this.team = team;
                 this.membersWithPublications = new ArrayList();
 
-                // Заполнение списка участников с публикациями
                 foreach (Person member in team.members)
                 {
                     foreach (Paper publication in team.publications)
@@ -295,7 +275,6 @@ namespace PracticalWork5
             }
         }
 
-        // Итератор для перебора участников с более чем одной публикацией
         public IEnumerable MembersWithMultiplePublications()
         {
             foreach (Person member in members)
@@ -314,7 +293,6 @@ namespace PracticalWork5
             }
         }
 
-        // Итератор для перебора публикаций за последний год
         public IEnumerable LastYearPublications()
         {
             DateTime oneYearAgo = DateTime.Now.AddYears(-1);

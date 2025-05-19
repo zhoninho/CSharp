@@ -8,59 +8,56 @@ namespace PracticalWork5
 {
     internal class Team : INameAndCopy
     {
-        // Защищенные поля
         protected string organization;
         protected int registrationNumber;
 
-        // Конструктор с параметрами
         public Team(string organization, int registrationNumber)
         {
             this.organization = organization;
             if (registrationNumber <= 0)
-                throw new ArgumentException("Registration number must be positive");
+                throw new ArgumentException("Номер регистрации должен быть положительным числом");
             this.registrationNumber = registrationNumber;
         }
 
-        // Конструктор без параметров
         public Team()
         {
-            organization = "Default Organization";
+            organization = "Организация по умолчанию";
             registrationNumber = 1;
         }
 
-        // Свойство для доступа к полю с названием организации
         public string Organization
         {
             get { return organization; }
             set { organization = value; }
         }
 
-        // Свойство для доступа к полю с номером регистрации
         public int RegistrationNumber
         {
             get { return registrationNumber; }
             set
             {
                 if (value <= 0)
-                    throw new ArgumentException("Registration number must be positive");
+                    throw new ArgumentException("Номер регистрации должен быть положительным числом");
                 registrationNumber = value;
             }
         }
 
-        // Реализация свойства Name из интерфейса INameAndCopy
-        public string Name
+        string INameAndCopy.Name
         {
             get { return organization; }
             set { organization = value; }
         }
 
-        // Виртуальный метод DeepCopy для интерфейса INameAndCopy
         public virtual object DeepCopy()
         {
             return new Team(organization, registrationNumber);
         }
 
-        // Переопределение метода Equals
+        object INameAndCopy.DeepCopy()
+        {
+            return DeepCopy();
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null || GetType() != obj.GetType())
@@ -71,11 +68,10 @@ namespace PracticalWork5
                    registrationNumber == other.registrationNumber;
         }
 
-        // Переопределение операторов == и !=
         public static bool operator ==(Team left, Team right)
         {
-            if (ReferenceEquals(left, null))
-                return ReferenceEquals(right, null);
+            if (ReferenceEquals(left, right)) return true;
+            if ((object)left == null || (object)right == null) return false;
             return left.Equals(right);
         }
 
@@ -84,19 +80,14 @@ namespace PracticalWork5
             return !(left == right);
         }
 
-        // Переопределение метода GetHashCode
         public override int GetHashCode()
         {
-            int hash = 17;
-            hash = hash * 23 + (organization?.GetHashCode() ?? 0);
-            hash = hash * 23 + registrationNumber.GetHashCode();
-            return hash;
+            return Organization.GetHashCode() + registrationNumber.GetHashCode();
         }
 
-        // Переопределение метода ToString()
         public override string ToString()
         {
-            return $"Team: Organization: {organization}, Registration Number: {registrationNumber}";
+            return $"Команда: Организация: {organization}, Номер Регистрации: {registrationNumber}";
         }
     }
 }

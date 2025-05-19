@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PracticalWork5
 {
-    internal interface INameAndCopy
+    public interface INameAndCopy
     {
         string Name { get; set; }
         object DeepCopy();

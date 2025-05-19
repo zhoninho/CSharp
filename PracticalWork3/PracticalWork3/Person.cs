@@ -32,6 +32,14 @@ namespace PracticalWork3
             set { birthDate = new DateTime(value, birthDate.Month, birthDate.Day); }
         }
 
+        public Person(Person other)
+        {
+            this.name = other.name;
+            this.surname = other.surname;
+            this.birthDate = other.birthDate;
+        }
+
+
         public Person()
         {
             name = "N/A";
@@ -45,6 +53,8 @@ namespace PracticalWork3
             this.surname = surname;
             this.birthDate = birthDate;
         }
+
+        
 
         public override string ToString()
         {
